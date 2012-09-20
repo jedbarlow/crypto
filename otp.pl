@@ -3,6 +3,8 @@
 #
 # TODO: Add help
 #
+# NOTE: This implementation uses xor instead of modular addition.
+#
 # Copyright 2012 Jed Barlow
 #
 # This program is free software: you can redistribute it and/or modify
