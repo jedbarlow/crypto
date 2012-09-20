@@ -21,6 +21,7 @@
 
 use Getopt::Long;
 
+#{{{ Setup arguments
 my $DEFAULT_KEY_SOURCE = '/dev/random';
 my $block_size = 1024 * 4;
 my $key_out = '';
@@ -34,8 +35,9 @@ my ($datf, $keyf) = @ARGV;
 unless (defined $datf) {
     die "Expecting at least one file as an argument.\n";
 }
+#}}}
 
-
+#{{{ Open files
 my $f1, $f2;
 open $f1, $datf or die "Cannot open $datf for reading.\n";
 binmode $f1;
@@ -68,8 +70,9 @@ else {
     open $f2, $DEFAULT_KEY_SOURCE
         or die "Cannot open $DEFAULT_KEY_SOURCE for reading.\n";
 }
+#}}}
 
-
+#{{{ XOR the streams
 my $x, $k;
 while (my $len = read $f1, $x, $block_size) {
     unless (read $f2, $k, $len) {
@@ -78,3 +81,4 @@ while (my $len = read $f1, $x, $block_size) {
     if ($key_out) {print $key_p $k}
     print $xor_p ($x ^ $k);
 }
+#}}}
