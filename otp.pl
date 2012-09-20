@@ -21,16 +21,16 @@
 
 use Getopt::Long;
 
-my $BLOCK_SIZE = 1;  # Larger values may cause /dev/*random streams to read
-                     # farther than necessary producing a pad that is larger
-                     # than required.
 my $DEFAULT_KEY_SOURCE = '/dev/random';
+my $block_size = 1024 * 4;
 my $key_out = '';
 my $xor_out = '';
 
-GetOptions('keyout=s' => \$key_out,
-           'xorout=s' => \$xor_out);
+GetOptions('keyout=s'    => \$key_out,
+           'xorout=s'    => \$xor_out,
+           'blocksize=n' => \$block_size);
 my ($datf, $keyf) = @ARGV;
+
 unless (defined $datf) {
     die "Expecting at least one file as an argument.\n";
 }
@@ -71,8 +71,8 @@ else {
 
 
 my $x, $k;
-while (read $f1, $x, $BLOCK_SIZE) {
-    unless (read $f2, $k, $BLOCK_SIZE) {
+while (my $len = read $f1, $x, $block_size) {
+    unless (read $f2, $k, $len) {
         die "warning: key not long enough, stopping xor.\n";
     }
     if ($key_out) {print $key_p $k}
